@@ -3,6 +3,7 @@ package com.engineering.vision.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,56 +11,70 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.engineering.vision.Repositories.VinRepository;
 import com.engineering.vision.models.SalesCode;
 import com.engineering.vision.models.Vin;
 
 @RestController
 @RequestMapping("/vins")
 public class VinController {
+	
+	@Autowired
+	private VinRepository vinRepo;
 
 	@GetMapping(value = "/all")
 	List<Vin> getAllVins() {
 		
-		List<Vin> vins = new ArrayList<>();
-		vins.add(new Vin("123456"));
-		vins.add(new Vin("098765"));
-		vins.add(new Vin("222222"));
-		vins.add(new Vin("444444"));
-		return vins; 
+		System.out.println("Records in " + vinRepo.count());
+		return vinRepo.findAll(); 
 	}
 	
 	@GetMapping(value = "/{vin}")
-	Vin getVin(@PathVariable String vin) throws Exception {
-		
-		if(vin.equalsIgnoreCase("123456")) {
-			Vin v = new Vin(vin);
-			return v;
-		} else{
-		    throw new Exception("Vin "+vin+" does not exists");
-		}
+	Vin getVin(@PathVariable String vin) {
+		return vinRepo.findOne(vin);
 	}
 	
 	@DeleteMapping(value = "/remove/{vin}") 
-	String removeVin(@PathVariable String vin) {
-		
-		System.out.println("Removing Vin: " + vin );
-		return "Removing Vin: " + vin; 
+	void removeVin(@PathVariable String vin) {
+		vinRepo.delete(vin); 
 	}
 	
 	@PostMapping(value = "/add/{vin}")
-	String addVin(@PathVariable String vin) {
+	Vin addVin(@PathVariable String vin) {
 		
-		return "Adding new Vin: " + vin;
+		vinRepo.save(new Vin(vin));
+		
+		return vinRepo.findOne(vin);
 	}
 	
 	@PostMapping(value = "/addsalescode/{vin}/{code}")
 	Vin addSalesCodeToVin(@PathVariable String vin,@PathVariable String code) {
 		
-		Vin v = new Vin(vin);
+		Vin v = vinRepo.findOne(vin);
 		SalesCode salesCode = new SalesCode(code);
-		v.getSaleCodes().add(salesCode);
+		v.getSalesCodes().add(salesCode);
+		vinRepo.save(v);
 		
-		return v;
+		return vinRepo.findOne(vin);
+	}
+	
+	@PostMapping(value = "/{vin}/removecode/{code}")
+	Vin removeSalesCodeFromVin(@PathVariable String vin, @PathVariable String code) {
+		
+		Vin v = vinRepo.findOne(vin);
+		v.getSalesCodes().removeIf(x -> x.getSalesCode() == code);
+		System.out.println(v.getSalesCodes().size());
+		vinRepo.save(v);
+		return vinRepo.findOne(vin);
+	}
+	
+	@PostMapping(value = "/{vin}/removecodes")
+	Vin removeSalesCodeFromVin(@PathVariable String vin) {
+		
+		Vin v = vinRepo.findOne(vin);
+		v.setSalesCodes(new ArrayList<>());
+		vinRepo.save(v);
+		return vinRepo.findOne(vin);
 	}
 	
 	

@@ -1,28 +1,24 @@
 package com.engineering.vision.models;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "salescodes")
 public class SalesCode {
 	
 	@Id
-	@JsonIgnore
-	private int salesCodeId; 
-	
+	@Column(name = "sales_code")
 	private String salesCode = "";
+	private String description = "";
 	
-	private String salesCodeDescription = "";
-	
-	@ManyToMany
-	List<Vin> vins = new ArrayList<>();
+	@ManyToMany(mappedBy = "salesCodes")
+	List<Vin> vin;
 	
 	public SalesCode() {
 		
@@ -30,20 +26,12 @@ public class SalesCode {
 	
 	public SalesCode(String salesCode) {
 		this.salesCode = salesCode;
-		this.salesCodeDescription = "Default";
+		this.description = "Default";
 	}
 
 	public SalesCode(String salesCode, String salesCodeDescription) {
 		this.salesCode = salesCode;
-		this.salesCodeDescription = salesCodeDescription;
-	}
-
-	public int getSalesCodeId() {
-		return salesCodeId;
-	}
-
-	public void setSalesCodeId(int salesCodeId) {
-		this.salesCodeId = salesCodeId;
+		this.description = salesCodeDescription;
 	}
 
 	public String getSalesCode() {
@@ -55,11 +43,11 @@ public class SalesCode {
 	}
 
 	public String getSalesCodeDescription() {
-		return salesCodeDescription;
+		return description;
 	}
 
-	public void setSalesCodeDescription(String salesCodeDescription) {
-		this.salesCodeDescription = salesCodeDescription;
+	public void setSalesCodeDescription(String description) {
+		this.description = description;
 	} 
 	
 	

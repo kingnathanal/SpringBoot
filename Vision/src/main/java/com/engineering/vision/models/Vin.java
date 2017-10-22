@@ -3,27 +3,37 @@ package com.engineering.vision.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Cascade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Table(name ="vins")
 public class Vin {
 	
 	@Id
-	@JsonIgnore
-	@GeneratedValue
-	private int vinId; 
-	private String vin = "";
-	private String model = "";
-	private String make = "";
-	private String transmission = "";
+	private String vin;
+	private String model;
+	private String make;
+	private String transmission;
 
-	@OneToMany
-	private List<SalesCode> saleCodes = new ArrayList<>(); 
+	@ManyToMany(targetEntity = SalesCode.class, cascade = CascadeType.ALL)
+	@JoinTable(
+			name = "vincodes",
+			joinColumns = {@JoinColumn(name = "vin")},
+			inverseJoinColumns = {@JoinColumn(name = "sales_code")})
+	private List<SalesCode> salesCodes;
 	
 	public Vin() {
 		
@@ -42,15 +52,7 @@ public class Vin {
 		this.model = model;
 		this.make = make;
 		this.transmission = transmission;
-		this.saleCodes = codes; 
-	}
-	
-	public void setVinId(int vinId) {
-		this.vinId = vinId;
-	}
-	
-	public int getVinId() {
-		return vinId; 
+		this.salesCodes = codes; 
 	}
 	
 	public String getVin() {
@@ -85,12 +87,12 @@ public class Vin {
 		this.transmission = transmission;
 	}
 	
-	public List<SalesCode> getSaleCodes() {
-		return saleCodes;
+	public List<SalesCode> getSalesCodes() {
+		return salesCodes;
 	}
 
-	public void setSaleCodes(ArrayList<SalesCode> saleCodes) {
-		this.saleCodes = saleCodes;
+	public void setSalesCodes(ArrayList<SalesCode> salesCodes) {
+		this.salesCodes = salesCodes;
 	}
 
 }
