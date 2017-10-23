@@ -23,11 +23,6 @@ public class SalesCode {
 	public SalesCode() {
 		
 	}
-	
-	public SalesCode(String salesCode) {
-		this.salesCode = salesCode;
-		this.description = "Default";
-	}
 
 	public SalesCode(String salesCode, String salesCodeDescription) {
 		this.salesCode = salesCode;

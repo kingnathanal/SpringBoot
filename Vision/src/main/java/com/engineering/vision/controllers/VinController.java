@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.engineering.vision.Repositories.SalesCodesRepository;
 import com.engineering.vision.Repositories.VinRepository;
 import com.engineering.vision.models.SalesCode;
 import com.engineering.vision.models.Vin;
@@ -21,11 +22,12 @@ public class VinController {
 	
 	@Autowired
 	private VinRepository vinRepo;
+	
+	@Autowired
+	private SalesCodesRepository codesRepo;
 
 	@GetMapping(value = "/all")
 	List<Vin> getAllVins() {
-		
-		System.out.println("Records in " + vinRepo.count());
 		return vinRepo.findAll(); 
 	}
 	
@@ -35,23 +37,33 @@ public class VinController {
 	}
 	
 	@DeleteMapping(value = "/remove/{vin}") 
-	void removeVin(@PathVariable String vin) {
-		vinRepo.delete(vin); 
+	void removeVin(@PathVariable String vin) throws Exception {
+		
+		if(!vinRepo.exists(vin))
+			throw new Exception("Vin: " +vin + " doesnt exist!!");
+		
+		vinRepo.delete(vin);
+		
 	}
 	
 	@PostMapping(value = "/add/{vin}")
-	Vin addVin(@PathVariable String vin) {
+	Vin addVin(@PathVariable String vin) throws Exception {
+		
+		if(vinRepo.exists(vin))
+			throw new Exception("Vin: " + vin + "exist already!!");
 		
 		vinRepo.save(new Vin(vin));
-		
 		return vinRepo.findOne(vin);
 	}
 	
-	@PostMapping(value = "/addsalescode/{vin}/{code}")
-	Vin addSalesCodeToVin(@PathVariable String vin,@PathVariable String code) {
+	@PostMapping(value = "/{vin}/addsalescode/{code}")
+	Vin addSalesCodeToVin(@PathVariable String vin,@PathVariable String code) throws Exception {
 		
+		if(!vinRepo.exists(vin) || !codesRepo.exists(code))
+			throw new Exception("Vin or Sales Code doesnt exist");
+			
 		Vin v = vinRepo.findOne(vin);
-		SalesCode salesCode = new SalesCode(code);
+		SalesCode salesCode = codesRepo.findOne(code);
 		v.getSalesCodes().add(salesCode);
 		vinRepo.save(v);
 		
@@ -62,8 +74,7 @@ public class VinController {
 	Vin removeSalesCodeFromVin(@PathVariable String vin, @PathVariable String code) {
 		
 		Vin v = vinRepo.findOne(vin);
-		v.getSalesCodes().removeIf(x -> x.getSalesCode() == code);
-		System.out.println(v.getSalesCodes().size());
+		v.getSalesCodes().removeIf(x -> x.getSalesCode().equals(code));
 		vinRepo.save(v);
 		return vinRepo.findOne(vin);
 	}
