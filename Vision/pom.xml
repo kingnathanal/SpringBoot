@@ -71,6 +71,13 @@
     		<version>2.6.1</version>
     		<scope>compile</scope>
 		</dependency>
+		        <!-- Use MySQL Connector-J -->
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+		
 	</dependencies>
 
 	<build>

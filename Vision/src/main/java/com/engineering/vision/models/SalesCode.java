@@ -1,6 +1,7 @@
 package com.engineering.vision.models;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +19,7 @@ public class SalesCode {
 	private String description = "";
 	
 	@ManyToMany(mappedBy = "salesCodes")
-	List<Vin> vin;
+	private Set<Vin> vin;
 	
 	public SalesCode() {
 		
@@ -43,13 +44,8 @@ public class SalesCode {
 
 	public void setSalesCodeDescription(String description) {
 		this.description = description;
-	} 
-	
-	
-
-	
-
-	
+	}
+		
 	
 	
 }

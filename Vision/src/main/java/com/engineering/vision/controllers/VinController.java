@@ -1,6 +1,6 @@
 package com.engineering.vision.controllers;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +83,7 @@ public class VinController {
 	Vin removeSalesCodeFromVin(@PathVariable String vin) {
 		
 		Vin v = vinRepo.findOne(vin);
-		v.setSalesCodes(new ArrayList<>());
+		v.setSalesCodes(new HashSet<>());
 		vinRepo.save(v);
 		return vinRepo.findOne(vin);
 	}

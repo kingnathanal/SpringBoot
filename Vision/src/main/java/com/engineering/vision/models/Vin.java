@@ -1,7 +1,6 @@
 package com.engineering.vision.models;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -21,12 +20,10 @@ public class Vin {
 	private String make;
 	private String transmission;
 
-	@ManyToMany(targetEntity = SalesCode.class, cascade = CascadeType.ALL)
-	@JoinTable(
-			name = "vincodes",
-			joinColumns = {@JoinColumn(name = "vin")},
-			inverseJoinColumns = {@JoinColumn(name = "sales_code")})
-	private List<SalesCode> salesCodes;
+	@ManyToMany(targetEntity = SalesCode.class, cascade = { CascadeType.PERSIST,CascadeType.MERGE})
+	@JoinTable(name = "vincodes", joinColumns = {@JoinColumn(name = "vin")}, inverseJoinColumns = {@JoinColumn(name = "sales_code")})
+	private Set<SalesCode> salesCodes;
+	
 	
 	public Vin() {
 		
@@ -39,7 +36,7 @@ public class Vin {
 		this.transmission = "Yes";
 	}
 	
-	public Vin(String vin, String model, String make, String transmission, List<SalesCode> codes) {
+	public Vin(String vin, String model, String make, String transmission, Set<SalesCode> codes) {
 		super();
 		this.vin = vin;
 		this.model = model;
@@ -80,11 +77,11 @@ public class Vin {
 		this.transmission = transmission;
 	}
 	
-	public List<SalesCode> getSalesCodes() {
+	public Set<SalesCode> getSalesCodes() {
 		return salesCodes;
 	}
 
-	public void setSalesCodes(ArrayList<SalesCode> salesCodes) {
+	public void setSalesCodes(Set<SalesCode> salesCodes) {
 		this.salesCodes = salesCodes;
 	}
 
