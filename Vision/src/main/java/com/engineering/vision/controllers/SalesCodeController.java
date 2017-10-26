@@ -30,7 +30,7 @@ public class SalesCodeController {
 	@GetMapping(value = "/{code}")
 	SalesCode getSalesCode(@PathVariable String code) {
 		
-		return codesRepo.findOne(code); 
+		return codesRepo.findBySalesCode(code); 
 	}
 	
 	@GetMapping(value = "/bydesc/{desc}")
@@ -41,34 +41,34 @@ public class SalesCodeController {
 	@PostMapping(value = "/add/{code}/{desc}")
 	SalesCode addSalesCode(@PathVariable String code, @PathVariable String desc) throws Exception {
 		
-		if(codesRepo.exists(code))
+		if(codesRepo.findBySalesCode(code) != null)
 			throw new Exception("Sales Code: " +code + " already exist!!");
 			
 		SalesCode salesCode = new SalesCode(code, desc);
 		codesRepo.save(salesCode);
-		return codesRepo.findOne(code); 
+		return codesRepo.findOne(codesRepo.findBySalesCode(code).getSalesCodeId()); 
 
 	}
 	
 	@PostMapping(value = "/update/{code}/{desc}")
 	SalesCode updateSalesCode(@PathVariable String code, @PathVariable String desc) throws Exception {
 		
-		if(!codesRepo.exists(code)) 
+		if(codesRepo.findBySalesCode(code) == null) 
 			throw new Exception(code + " does not exist!!");
 		
-		SalesCode salesCode = codesRepo.findOne(code);
+		SalesCode salesCode = codesRepo.findBySalesCode(code);
 		salesCode.setSalesCodeDescription(desc);
 		codesRepo.save(salesCode);
-		return codesRepo.findOne(code); 
+		return codesRepo.findOne(codesRepo.findBySalesCode(code).getSalesCodeId()); 
 	}
 	
 	@DeleteMapping(value = "/remove/{code}")
 	void removeSalesCode(@PathVariable String code) throws Exception {
 		
-		if(!codesRepo.exists(code)) 
+		if(codesRepo.findBySalesCode(code) == null) 
 			throw new Exception(code + " does not exist!!");
 			
-		codesRepo.delete(code);
+		codesRepo.delete(codesRepo.findBySalesCode(code).getSalesCodeId());
 			
 	}
 	

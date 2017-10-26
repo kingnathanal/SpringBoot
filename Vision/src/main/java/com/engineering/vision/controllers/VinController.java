@@ -1,5 +1,6 @@
 package com.engineering.vision.controllers;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -33,59 +34,73 @@ public class VinController {
 	
 	@GetMapping(value = "/{vin}")
 	Vin getVin(@PathVariable String vin) {
-		return vinRepo.findOne(vin);
+		
+		return vinRepo.findByVin(vin);
+	}
+	
+	@GetMapping(value = "/{vin}/getsalescodes")
+	List<String> getSalesCodesForVin(@PathVariable String vin) throws Exception {
+		
+		if(vinRepo.findByVin(vin)== null)
+			throw new Exception("Vin: " +vin + " doesnt exist!!");
+		
+		List<String> codes = new ArrayList<>();
+		
+		vinRepo.findByVin(vin).getSalesCodes().forEach(x -> codes.add(x.getSalesCode()));
+		
+		return codes;
 	}
 	
 	@DeleteMapping(value = "/remove/{vin}") 
 	void removeVin(@PathVariable String vin) throws Exception {
 		
-		if(!vinRepo.exists(vin))
+		if(vinRepo.findByVin(vin) == null)
 			throw new Exception("Vin: " +vin + " doesnt exist!!");
 		
-		vinRepo.delete(vin);
+		vinRepo.delete(vinRepo.findByVin(vin).getVinid());
 		
 	}
 	
 	@PostMapping(value = "/add/{vin}")
 	Vin addVin(@PathVariable String vin) throws Exception {
 		
-		if(vinRepo.exists(vin))
+		if(vinRepo.findByVin(vin) != null)
 			throw new Exception("Vin: " + vin + "exist already!!");
 		
 		vinRepo.save(new Vin(vin));
-		return vinRepo.findOne(vin);
+		return vinRepo.findByVin(vin);
 	}
 	
 	@PostMapping(value = "/{vin}/addsalescode/{code}")
 	Vin addSalesCodeToVin(@PathVariable String vin,@PathVariable String code) throws Exception {
 		
-		if(!vinRepo.exists(vin) || !codesRepo.exists(code))
+		if(vinRepo.findByVin(vin) == null || codesRepo.findBySalesCode(code) == null)
 			throw new Exception("Vin or Sales Code doesnt exist");
 			
-		Vin v = vinRepo.findOne(vin);
-		SalesCode salesCode = codesRepo.findOne(code);
+		Vin v = vinRepo.findByVin(vin);
+		SalesCode salesCode = codesRepo.findBySalesCode(code);
 		v.getSalesCodes().add(salesCode);
 		vinRepo.save(v);
 		
-		return vinRepo.findOne(vin);
+		return vinRepo.findByVin(vin);
 	}
 	
 	@PostMapping(value = "/{vin}/removecode/{code}")
 	Vin removeSalesCodeFromVin(@PathVariable String vin, @PathVariable String code) {
 		
-		Vin v = vinRepo.findOne(vin);
+		Vin v = vinRepo.findByVin(vin);
 		v.getSalesCodes().removeIf(x -> x.getSalesCode().equals(code));
 		vinRepo.save(v);
-		return vinRepo.findOne(vin);
+		return vinRepo.findByVin(vin);
 	}
 	
 	@PostMapping(value = "/{vin}/removecodes")
 	Vin removeSalesCodeFromVin(@PathVariable String vin) {
 		
-		Vin v = vinRepo.findOne(vin);
+		Vin v = vinRepo.findByVin(vin);
 		v.setSalesCodes(new HashSet<>());
 		vinRepo.save(v);
-		return vinRepo.findOne(vin);
+		return vinRepo.findByVin(vin);
 	}
 	
 	

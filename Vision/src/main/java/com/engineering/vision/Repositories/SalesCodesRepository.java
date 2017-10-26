@@ -8,7 +8,9 @@ import org.springframework.stereotype.Repository;
 import com.engineering.vision.models.SalesCode;
 
 @Repository
-public interface SalesCodesRepository extends JpaRepository<SalesCode, String> {
+public interface SalesCodesRepository extends JpaRepository<SalesCode, Long> {
 
 	List<SalesCode> findByDescription(String description);
+	
+	SalesCode findBySalesCode(String salesCode);
 }

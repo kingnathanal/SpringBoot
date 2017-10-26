@@ -8,8 +8,10 @@ import org.springframework.stereotype.Repository;
 import com.engineering.vision.models.Vin;
 
 @Repository
-public interface VinRepository extends JpaRepository<Vin, String> {
+public interface VinRepository extends JpaRepository<Vin, Long> {
 	
 	//Vin findByVin(String vin);
 	List<Vin> findByModel(String model);
+	
+	Vin findByVin(String vin);
 }
