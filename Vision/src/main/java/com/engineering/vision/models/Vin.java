@@ -29,9 +29,9 @@ public class Vin {
 	private String model;
 	private String make;
 	@Column(name="transmission")
-	private String transmissionModel;
+	private String transmissionTypeSalesCode;
 	@Column(name="drivetype")
-	private String transmissionModeDesc;
+	private String transmissionTypeDesc;
 	@Column(name="drivetypedesc")
 	private String driveType;
 	@Column(name="gearratio")
@@ -56,16 +56,22 @@ public class Vin {
 		this.vin = vin;
 		this.model = "DD13";
 		this.make = "Freight";
-		this.transmissionModel = "Yes";
 		this.salesCodes = new HashSet<>();
+		fillInTheDetails("343-001");
 	}
 	
-	public Vin(String vin, String model, String make, String transmission, Set<SalesCode> codes) {
+	public Vin(String vin,String transmissionTypeSalesCode) {
+		this.vin = vin;
+		this.model = "DD15";
+		fillInTheDetails(transmissionTypeSalesCode);
+	}
+	
+	public Vin(String vin, String model, String make, String transmissionTypeSalesCode, Set<SalesCode> codes) {
 		super();
 		this.vin = vin;
 		this.model = model;
 		this.make = make;
-		this.transmissionModel = transmission;
+		this.transmissionTypeSalesCode = transmissionTypeSalesCode;
 		this.salesCodes = codes; 
 	}
 	
@@ -93,12 +99,12 @@ public class Vin {
 		this.make = make;
 	}
 	
-	public String getTransmissionModel() {
-		return transmissionModel;
+	public String getTransmissionTypeSalesCode() {
+		return transmissionTypeSalesCode;
 	}
 	
-	public void setTransmissionModel(String transmission) {
-		this.transmissionModel = transmission;
+	public void setTransmissionTypeSalesCode(String transmissionTypeSalesCode) {
+		this.transmissionTypeSalesCode = transmissionTypeSalesCode;
 	}
 	
 	public Set<SalesCode> getSalesCodes() {
@@ -117,12 +123,12 @@ public class Vin {
 		this.vinid = vinid;
 	}
 
-	public String getTransmissionModeDesc() {
-		return transmissionModeDesc;
+	public String getTransmissionTypeDesc() {
+		return transmissionTypeDesc;
 	}
 
-	public void setTransmissionModeDesc(String transmissionModeDesc) {
-		this.transmissionModeDesc = transmissionModeDesc;
+	public void setTransmissionTypeDesc(String transmissionTypeDesc) {
+		this.transmissionTypeDesc = transmissionTypeDesc;
 	}
 
 	public String getDriveType() {
@@ -163,6 +169,57 @@ public class Vin {
 
 	public void setDryWeight(String dryWeight) {
 		this.dryWeight = dryWeight;
+	}
+	
+	public void fillInTheDetails(String value) {
+		
+		switch (value) {
+		case "343-001":
+			this.driveType = "Direct";
+			this.dryWeight = "786 lbs";
+			this.gcwLimit = "80,000lbs";
+			this.gearRatio = "14.93-1";
+			this.overallRatio = "14.93";
+			this.transmissionTypeDesc = "DT12-DA";
+			this.transmissionTypeSalesCode = "343-001";
+			break;
+		case "343-002":
+			this.driveType = "Direct";
+			this.dryWeight = "786 lbs";
+			this.gcwLimit = "80,000lbs";
+			this.gearRatio = "14.93-1";
+			this.overallRatio = "14.93";
+			this.transmissionTypeDesc = "DT12-DB";
+			this.transmissionTypeSalesCode = "343-002";
+			break;
+		case "343-003":
+			this.driveType = "Overdrive";
+			this.dryWeight = "786 lbs";
+			this.gcwLimit = "80,000lbs";
+			this.gearRatio = "11.67-0.78";
+			this.overallRatio = "14.96";
+			this.transmissionTypeDesc = "DT12-OA";
+			this.transmissionTypeSalesCode = "343-003";
+			break;
+		case "343-004":
+			this.driveType = "Overdrive";
+			this.dryWeight = "786 lbs";
+			this.gcwLimit = "80,000lbs";
+			this.gearRatio = "11.67-0.78";
+			this.overallRatio = "14.96";
+			this.transmissionTypeDesc = "DT12-OB";
+			this.transmissionTypeSalesCode = "343-004";
+			break;
+		default:
+			this.driveType = "Unknown";
+			this.dryWeight = "Unknown";
+			this.gcwLimit = "Unknown";
+			this.gearRatio = "Unknown";
+			this.overallRatio = "Unknown";
+			this.transmissionTypeDesc = "Unknown";
+			this.transmissionTypeSalesCode = "Unknown";
+			break;
+		}
 	}
 
 }

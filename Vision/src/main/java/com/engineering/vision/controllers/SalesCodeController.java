@@ -13,8 +13,20 @@ import org.springframework.web.bind.annotation.RestController;
 import com.engineering.vision.Repositories.SalesCodesRepository;
 import com.engineering.vision.models.SalesCode;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
 @RequestMapping("/salescodes")
+@ApiResponses(
+		value = { 
+				@ApiResponse(code = 200, message = "Successful Sales Code Data Transaction"),
+				@ApiResponse(code = 500, message = "Unsuccessful Sales Code Data Tranascation, Check Message")
+		}
+)
+@Api(value = "Sales Codes Rest API Service Endpoints", description = "Shows Rest Endpoints & Data for Sales Codes")
 public class SalesCodeController {
 	
 	@Autowired
@@ -22,23 +34,27 @@ public class SalesCodeController {
 	
 	
 	@GetMapping(value = "/all")
+	@ApiOperation(value = "Return a list of all Sales Codes")
 	List<SalesCode> getAllSalesCodes() {
 		
 		return codesRepo.findAll(); 
 	}
 	
 	@GetMapping(value = "/{code}")
+	@ApiOperation(value = "Return data for a Sales Code")
 	SalesCode getSalesCode(@PathVariable String code) {
 		
 		return codesRepo.findBySalesCode(code); 
 	}
 	
 	@GetMapping(value = "/bydesc/{desc}")
+	@ApiOperation(value = "Return a list of Sales Codes by Description")
 	List<SalesCode> getSalesCodeByDesc(@PathVariable String desc) {
 		return codesRepo.findByDescription(desc);
 	}
 	
 	@PostMapping(value = "/add/{code}/{desc}")
+	@ApiOperation(value = "Add new Sales Code to Database, add Sales Code Description")
 	SalesCode addSalesCode(@PathVariable String code, @PathVariable String desc) throws Exception {
 		
 		if(codesRepo.findBySalesCode(code) != null)
@@ -51,6 +67,7 @@ public class SalesCodeController {
 	}
 	
 	@PostMapping(value = "/update/{code}/{desc}")
+	@ApiOperation(value = "Update Sales Code with new Description")
 	SalesCode updateSalesCode(@PathVariable String code, @PathVariable String desc) throws Exception {
 		
 		if(codesRepo.findBySalesCode(code) == null) 
@@ -63,6 +80,7 @@ public class SalesCodeController {
 	}
 	
 	@DeleteMapping(value = "/remove/{code}")
+	@ApiOperation(value = "Remove Sales Code from Database")
 	void removeSalesCode(@PathVariable String code) throws Exception {
 		
 		if(codesRepo.findBySalesCode(code) == null) 
